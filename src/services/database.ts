@@ -10,7 +10,7 @@ const databaseCredentials = {
     authPlugin: 'mysql_native_password'
 }
 
-const connection = mysql.createConnection(databaseCredentials)
+const connection: mysql.Connection = mysql.createConnection(databaseCredentials)
 connection.connect((err) => {
     if (err) {
         consola.error(`Unable to connect to ${databaseCredentials.database} with user "${databaseCredentials.user}" and password "${databaseCredentials.password}"`)
@@ -18,17 +18,16 @@ connection.connect((err) => {
     }
 })
 
-export function getConnection() {
+export function getConnection(): mysql.Connection {
     return connection
 }
 
-export function clean() {
+export function clean(): void {
     connection.query(
         'TRUNCATE TABLE receipts',
         (error) => {
             if (error) {
                 consola.error(error)
-                return
             }
             else {
                 consola.success('All meals have been deleted.')

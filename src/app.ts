@@ -25,7 +25,7 @@ program.command('find')
         const meals: Meal[] = await getAllMeals()
         const mealsFiltered: Meal[] = await getRandomMeals(meals, number)
         if (mealsFiltered.length > 0) { consola.box(mealsFiltered.map((meal) => { return meal.name }).join('\n')) }
-        const save = await consola.prompt('Do you want to save this choice ?', { type: 'confirm' })
+        const save: boolean = await consola.prompt('Do you want to save this choice ?', { type: 'confirm' })
 
         if (save) {
             const lines: string[] = await createListeDeCourse(mealsFiltered)
@@ -37,7 +37,7 @@ program.command('find')
 program.command('count')
     .description('Get the number of meals you have in database.')
     .action(async () => {
-        const meals = await getAllMeals()
+        const meals: Meal[] = await getAllMeals()
         consola.box(`You have ${meals.length} meal(s) saved.`)
     })
 
@@ -66,7 +66,7 @@ program.command('clean')
     .description('Delete all meals saved.')
     .action(async () => {
         const meals: Meal[] = await getAllMeals()
-        const response = await consola.prompt(`You will delete ${meals.length} meal(s). Are you sure?`, { type: 'confirm' })
+        const response: boolean = await consola.prompt(`You will delete ${meals.length} meal(s). Are you sure?`, { type: 'confirm' })
         if (response) {
             clean()
         }

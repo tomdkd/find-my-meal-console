@@ -8,7 +8,7 @@ export async function getRandomMeals(meals: Meal[], number: number): Promise<Mea
         const mealsUsed: string[] = []
     
         for (let i = 0; i <= number; i++) {
-            const randomNumber = Math.floor(Math.random() * (meals.length - 1)) + 1
+            const randomNumber: number = Math.floor(Math.random() * (meals.length - 1)) + 1
             const meal: Meal = meals[randomNumber]
     
             if (mealsUsed.includes(meal.name)) { i--; continue }
@@ -20,7 +20,7 @@ export async function getRandomMeals(meals: Meal[], number: number): Promise<Mea
 }
 
 export async function addMeal(name: string, content: string): Promise<void> {
-    const date = new Date()
+    const date: Date = new Date()
 
     if (await mealExists(name)) {
         consola.error(`Meal ${name} already exists.`)
