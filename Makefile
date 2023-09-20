@@ -27,3 +27,6 @@ update-dep:
 
 connect:
 	${DOCKER} exec nodejs /bin/sh
+
+down:
+	${DOCKER} down
