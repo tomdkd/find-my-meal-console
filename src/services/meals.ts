@@ -66,6 +66,7 @@ export async function getAllMeals(): Promise<Meal[]> {
             (error, results) => {
                 if (error) { consola.error(error); return }
                 else { resolve(results) }
-            })
+            }
+        )
     })
 }
