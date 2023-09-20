@@ -8,15 +8,9 @@ import { type Meal } from './interfaces/meal.interface'
 import { createListeDeCourse } from './services/csv'
 
 program
-    .name('node app.js')
+    .name('node dist/app.js')
     .description('You will get ideas for your meals during this week !')
-    .version('0.0.1')
-
-program.command('add')
-    .description('Add a meal idea.')
-    .argument('<name>', 'The name of the meal')
-    .argument('<receipt>', 'The receipt of the meal (What you should buy to do it)')
-    .action(() => {})
+    .version('0.0.2')
 
 program.command('find')
     .description('Let the application choose what you could do !')
@@ -60,7 +54,16 @@ program.command('convert')
 
 program.command('export')
     .description('Save all your meals into a csv file.')
-    .action(() => {})
+    .action(async () => {
+        const meals: Meal[] = await getAllMeals()
+        const lines = ['name,content']
+        meals.forEach((meal) => {
+            lines.push(`${meal.name},${meal.content}`)
+        })
+
+        fs.writeFileSync('export.csv', lines.join('\n'))
+        consola.success('Database exported')
+    })
 
 program.command('clean')
     .description('Delete all meals saved.')
