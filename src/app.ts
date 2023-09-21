@@ -1,13 +1,19 @@
 import { consola } from 'consola'
-import { getAllMeals, getRandomMeals, addMeal } from './services/meals'
-import { clean } from './services/database'
+import { MealService } from './services/meal.service'
 import { program } from 'commander'
 import csv from 'csv-parser'
 import * as fs from 'fs'
 import { type Meal } from './interfaces/meal.interface'
-import { createListeDeCourse } from './services/csv'
+import { DatabaseService } from './services/database.service'
+import { CSVService } from './services/csv.service'
+
 
 (async () => {
+    const meal: MealService = new MealService()
+    const allMeals: Meal[] = await meal.getAllMeals()
+    const mealsNumber: number = allMeals.length
+    const database: DatabaseService = new DatabaseService()
+
     program
         .name('node dist/app.js')
         .description('You will get ideas for your meals during this week !')
@@ -17,13 +23,13 @@ import { createListeDeCourse } from './services/csv'
         .description('Let the application choose what you could do !')
         .argument('<number>', 'Specify the number of meals you want.')
         .action(async (number) => {
-            const meals: Meal[] = await getAllMeals()
-            const mealsFiltered: Meal[] = await getRandomMeals(meals, number)
+            const mealsFiltered: Meal[] = await meal.getRandomMeals(allMeals, number)
             if (mealsFiltered.length > 0) { consola.box(mealsFiltered.map((meal) => { return meal.name }).join('\n')) }
             const save: boolean = await consola.prompt('Do you want to save this choice ?', { type: 'confirm' })
 
             if (save) {
-                const lines: string[] = await createListeDeCourse(mealsFiltered)
+                const csvService: CSVService = new CSVService()
+                const lines: string[] = await csvService.createListeDeCourse(mealsFiltered)
                 fs.writeFileSync('liste_de_course.txt', lines.join('\n'))
                 consola.success('File liste_de_course.txt created !')
             }
@@ -32,8 +38,7 @@ import { createListeDeCourse } from './services/csv'
     program.command('count')
         .description('Get the number of meals you have in database.')
         .action(async () => {
-            const meals: Meal[] = await getAllMeals()
-            consola.box(`You have ${meals.length} meal(s) saved.`)
+            consola.box(`You have ${mealsNumber} meal(s) saved.`)
         })
 
     program.command('convert')
@@ -48,7 +53,7 @@ import { createListeDeCourse } from './services/csv'
                 .on('end', () => {
                     consola.success(`${results.length} rows found.`)
                     results.forEach(async (element) => {
-                        await addMeal(element.name, element.content)
+                        await meal.addMeal(element.name, element.content)
                     })
                 })
         })
@@ -56,9 +61,8 @@ import { createListeDeCourse } from './services/csv'
     program.command('export')
         .description('Save all your meals into a csv file.')
         .action(async () => {
-            const meals: Meal[] = await getAllMeals()
             const lines = ['name,content']
-            meals.forEach((meal) => {
+            allMeals.forEach((meal: Meal) => {
                 lines.push(`${meal.name},${meal.content}`)
             })
 
@@ -69,10 +73,9 @@ import { createListeDeCourse } from './services/csv'
     program.command('clean')
         .description('Delete all meals saved.')
         .action(async () => {
-            const meals: Meal[] = await getAllMeals()
-            const response: boolean = await consola.prompt(`You will delete ${meals.length} meal(s). Are you sure?`, { type: 'confirm' })
+            const response: boolean = await consola.prompt(`You will delete ${mealsNumber} meal(s). Are you sure?`, { type: 'confirm' })
             if (response) {
-                clean()
+                database.clean()
             }
         })
 

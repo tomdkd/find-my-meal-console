@@ -11,7 +11,7 @@ services:
   mysql:
     image: mysql:8.1-oracle
     environment:
-      - MYSQL_USER=thomas
+      - MYSQL_USER=custom_user
       - MYSQL_PASSWORD=root
       - MYSQL_ROOT_PASSWORD=root
       - MYSQL_DATABASE=find_my_meal_console
