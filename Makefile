@@ -4,6 +4,7 @@ install:
 	${DOCKER} down
 	${DOCKER} build
 	${DOCKER} up -d
+	@cp .env.dist .env
 	docker cp ./database_schema.sql find_my_meal_console-mysql-1:/
 	sleep 2
 	${DOCKER} exec nodejs npm run build

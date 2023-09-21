@@ -6,4 +6,4 @@ CREATE TABLE IF NOT EXISTS `find_my_meal_console`.`receipts` (
   `updated_at` DATETIME NULL,
   PRIMARY KEY (`id`));
 
-ALTER USER 'thomas'@'%' IDENTIFIED WITH mysql_native_password BY 'thomas';
+ALTER USER 'custom_user'@'%' IDENTIFIED WITH mysql_native_password BY 'custom_user';
