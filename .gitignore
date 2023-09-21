@@ -4,3 +4,4 @@ src/*.txt
 src/node_modules
 src/.env
 src/.DS_Store
+src/coverage/
